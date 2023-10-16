@@ -56,18 +56,35 @@ class App extends Component {
           category: 'sofas',
           price: '249.99'
         },
-      ]
+      ],
+      orders: [
+
+      ],
     }
   }
 
   render() {
     return (
       <div className="wrapper">
-        <Header />
-        <Items items={this.state.items}/>
+        <Header orders={this.state.orders} onDelete={this.deleteOrder} />
+        <Items items={this.state.items} onAdd={this.addToOrder} />
         <Footer />
       </div>
     );
+  }
+
+  addToOrder = (item) => {
+    let isInArray = false;
+    this.state.orders.forEach(el => {
+      if (el.id === item.id) isInArray = true;
+    })
+    if (!isInArray) {
+      this.setState({ orders: [...this.state.orders, item] })
+    }
+  }
+
+  deleteOrder = (id) => {
+    this.setState({ orders: this.state.orders.filter(el => el.id !== id) })
   }
 }
 
