@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Items from "./components/Items";
+import Categories from "./components/Categories";
 
 class App extends Component {
   constructor(props) {
@@ -29,7 +30,7 @@ class App extends Component {
           title: 'Лампа',
           img: 'lamp.jpg',
           desc: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. ',
-          category: 'lamps',
+          category: 'light',
           price: '19.99'
         },
         {
@@ -57,20 +58,35 @@ class App extends Component {
           price: '249.99'
         },
       ],
-      orders: [
-
-      ],
+      orders: [],
+      // Сначала показываем все элементы, а дальше уже будут мутации, которые не повлияют на основной массив. 
+      // Поэтому в компонент Items передаём currentItems 
+      currentItems: [],
     }
+    this.state.currentItems = this.state.items;
   }
 
   render() {
     return (
       <div className="wrapper">
         <Header orders={this.state.orders} onDelete={this.deleteOrder} />
-        <Items items={this.state.items} onAdd={this.addToOrder} />
+        <Categories chooseCategory={this.chooseCategory}/>
+        <Items items={this.state.currentItems} onAdd={this.addToOrder} />
         <Footer />
       </div>
     );
+  }
+
+  chooseCategory = (category) => {
+    if (category === 'all') {
+      this.setState({currentItems: this.state.items});
+      return;
+    }
+
+    this.setState({
+      // Фильтруем items, а не currentItems дабы не было одноразовой фильтрации
+      currentItems: this.state.items.filter(el => el.category === category)
+    })
   }
 
   addToOrder = (item) => {
