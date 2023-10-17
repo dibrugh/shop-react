@@ -3,6 +3,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Items from "./components/Items";
 import Categories from "./components/Categories";
+import ShowFullItem from "./components/ShowFullItem";
 
 class App extends Component {
   constructor(props) {
@@ -62,6 +63,11 @@ class App extends Component {
       // Сначала показываем все элементы, а дальше уже будут мутации, которые не повлияют на основной массив. 
       // Поэтому в компонент Items передаём currentItems 
       currentItems: [],
+      showFullItem: false,
+      // Отображаемый товар (модалка)
+      fullItem: {
+
+      }
     }
     this.state.currentItems = this.state.items;
   }
@@ -70,16 +76,23 @@ class App extends Component {
     return (
       <div className="wrapper">
         <Header orders={this.state.orders} onDelete={this.deleteOrder} />
-        <Categories chooseCategory={this.chooseCategory}/>
-        <Items items={this.state.currentItems} onAdd={this.addToOrder} />
+        <Categories chooseCategory={this.chooseCategory} />
+        <Items items={this.state.currentItems} onAdd={this.addToOrder} onShowItem={this.onShowItem} />
+
+        {this.state.showFullItem && <ShowFullItem item={this.state.fullItem} onAdd={this.addToOrder} onShowItem={this.onShowItem}/>}
         <Footer />
       </div>
     );
   }
 
+  onShowItem = (item) => {
+    this.setState({ fullItem: item })
+    this.setState({ showFullItem: !this.state.showFullItem })
+  }
+
   chooseCategory = (category) => {
     if (category === 'all') {
-      this.setState({currentItems: this.state.items});
+      this.setState({ currentItems: this.state.items });
       return;
     }
 
